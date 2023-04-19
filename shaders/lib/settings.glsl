@@ -1,3 +1,5 @@
+#include "/ns/configs/color-grading.glsl"
+
 /* 
 BSL Shaders v8 Series by Capt Tatsu 
 https://bitslablab.com 
