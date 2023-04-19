@@ -810,3 +810,8 @@ option.WAVING_LANTERN.comment=Allows lantern to wave.
 
 screen.NS=§lBSL-§c§lNS§r §ov0.1§r...
 screen.NS.comment=Noisysundae's BSL Extension\n———\n\nClick to expand settings related to BSL-NS features.
+
+screen.NS_OUTLINE=Outline Settings...
+screen.NS_OUTLINE.comment=Additional BSL outline settings.
+option.OUTLINE_MIX=Outline Mix§d*
+option.OUTLINE_MIX.comment=Adjust the intensity of the outline.\n§d*§r BSL-NS' Extended Setting
