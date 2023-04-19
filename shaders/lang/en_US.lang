@@ -833,3 +833,12 @@ option.WAVING_LANTERN.comment=Allows lantern to wave.
 
 screen.NS=§lBSL-§c§lNS§r §ov0.1§r...
 screen.NS.comment=Noisysundae's BSL Extension\n———\n\nClick to expand settings related to BSL-NS features.
+
+screen.NS_EXTENDED_COLOR_GRADING=Extended Color Grading...
+screen.NS_EXTENDED_COLOR_GRADING.comment=Less confusing color grading HUD, plus extra sliders.
+option.CG_RX=Max §cR§d*
+option.CG_RX.comment=Maximum Red Value\n§d*§r BSL-NS' Extended Setting
+option.CG_GX=Max §aG§d*
+option.CG_GX.comment=Maximum Green Value\n§d*§r BSL-NS' Extended Setting
+option.CG_BX=Max §9B§d*
+option.CG_BX.comment=Maximum Blue Value\n§d*§r BSL-NS' Extended Setting
