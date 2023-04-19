@@ -803,3 +803,10 @@ option.WAVING_FIRE=Fire
 option.WAVING_FIRE.comment=Allows fire to wave.
 option.WAVING_LANTERN=Lantern
 option.WAVING_LANTERN.comment=Allows lantern to wave.
+
+################
+
+### BSL-NS
+
+screen.NS=§lBSL-§c§lNS§r §ov0.1§r...
+screen.NS.comment=Noisysundae's BSL Extension\n———\n\nClick to expand settings related to BSL-NS features.
