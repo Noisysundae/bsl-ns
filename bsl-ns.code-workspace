@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{ "name": "Root", "path": "." },
+		{ "name": "Shaders","path": "shaders" }
+	],
+	"settings": {
+		"conventionalCommits.scopes": [
+			"`vscode`",
+			"`git`",
+			"`glsl`"
+		]
+	}
+}
