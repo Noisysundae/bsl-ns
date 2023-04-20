@@ -810,3 +810,32 @@ option.WAVING_LANTERN.comment=Allows lantern to wave.
 
 screen.NS=§lBSL-§c§lNS§r §ov0.1§r...
 screen.NS.comment=Noisysundae's BSL Extension\n———\n\nClick to expand settings related to BSL-NS features.
+
+option.NS_DITHERING_ENABLED=Precise Dithering
+option.NS_DITHERING_ENABLED.comment=Corrects the pattern dithering algorithm (Bayer filter).
+screen.NS_DITHERING=Dithering Settings...
+screen.NS_DITHERING.comment=Expand other dithering settings.
+option.NS_DITHERING_BAYER_EXPONENT=Pattern Steps
+option.NS_DITHERING_BAYER_EXPONENT.comment=Adjust the number of steps on the pattern filter. Higher = smoother patterns.
+value.NS_DITHERING_BAYER_EXPONENT.1=4 (2x2 Filter)
+value.NS_DITHERING_BAYER_EXPONENT.2=16 (4x4 Filter)
+value.NS_DITHERING_BAYER_EXPONENT.3=64 (8x8 Filter)
+value.NS_DITHERING_BAYER_EXPONENT.4=256 (16x16 Filter)
+value.NS_DITHERING_BAYER_EXPONENT.5=1024 (32x32 Filter)
+value.NS_DITHERING_BAYER_EXPONENT.6=4096 (64x64 Filter)
+option.NS_DITHERING_BAYER_SCALE=Pattern Scale
+option.NS_DITHERING_BAYER_SCALE.comment=How big should a dot in the pattern be?
+value.NS_DITHERING_BAYER_SCALE.0.5=0.5 Pixels
+value.NS_DITHERING_BAYER_SCALE.1.0=1 Pixel
+value.NS_DITHERING_BAYER_SCALE.1.5=1.5 Pixels
+value.NS_DITHERING_BAYER_SCALE.2.0=2 Pixels
+value.NS_DITHERING_BAYER_SCALE.2.5=2.5 Pixels
+value.NS_DITHERING_BAYER_SCALE.3.0=3 Pixels
+value.NS_DITHERING_BAYER_SCALE.3.5=3.5 Pixels
+value.NS_DITHERING_BAYER_SCALE.4.0=4 Pixels
+value.NS_DITHERING_BAYER_SCALE.5.0=5 Pixels
+value.NS_DITHERING_BAYER_SCALE.6.0=6 Pixels
+value.NS_DITHERING_BAYER_SCALE.7.0=7 Pixels
+value.NS_DITHERING_BAYER_SCALE.8.0=8 Pixels
+option.NS_DITHERING_BSL_BAYER_OVERRIDE=Override BSL's Dithering
+option.NS_DITHERING_BSL_BAYER_OVERRIDE.comment=Enabling this affects all BSL's effects that use dithering, such as light shaft.
