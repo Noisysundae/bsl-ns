@@ -6,6 +6,9 @@ https://bitslablab.com
 //Settings//
 #include "/lib/settings.glsl"
 
+//BSL-NS//
+#include "/ns/features/cpf.glsl"
+
 //Fragment Shader///////////////////////////////////////////////////////////////////////////////////
 #ifdef FSH
 
@@ -291,6 +294,8 @@ void main() {
 		albedo.rgb = sqrt(max(albedo.rgb, vec3(0.0)));
 		#endif
 	}
+
+	albedo.a *= getPf(true);
 
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = albedo;

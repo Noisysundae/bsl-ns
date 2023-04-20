@@ -164,7 +164,8 @@ void ColorGrading(inout vec3 color) {
 				   pow(color.g, CG_GC) * pow(vec3(CG_GR, CG_GG, CG_GB) / 255.0, vec3(2.2)) +
 				   pow(color.b, CG_BC) * pow(vec3(CG_BR, CG_BG, CG_BB) / 255.0, vec3(2.2));
 	vec3 cgMin = pow(vec3(CG_RM, CG_GM, CG_BM) / 255.0, vec3(2.2));
-	color = (cgColor * (1.0 - cgMin) + cgMin) * vec3(CG_RI, CG_GI, CG_BI);
+	vec3 cgMax = pow(vec3(CG_RX, CG_GX, CG_BX) / 255.0, vec3(2.2));
+	color = (cgColor * (cgMax - cgMin) + cgMin) * vec3(CG_RI, CG_GI, CG_BI);
 	
 	vec3 cgTint = pow(vec3(CG_TR, CG_TG, CG_TB) / 255.0, vec3(2.2)) * GetLuminance(color) * CG_TI;
 	color = mix(color, cgTint, CG_TM);

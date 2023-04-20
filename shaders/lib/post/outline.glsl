@@ -48,11 +48,11 @@ void Outline(vec3 color, bool secondPass, out vec4 outerOutline, out vec4 innerO
 	oOutlineColor *= oOutlineColor;
 	#endif
 
-    oOutlineColor = sqrt(oOutlineColor) * 0.35;
+    oOutlineColor = sqrt(oOutlineColor) / (1 + (OUTLINE_MIX * 1.857));
     oOutlineColor *= oOutlineColor;
     oOutlineMask = 1.0 - oOutlineMask;
 
-    iOutlineColor = sqrt(iOutlineColor) * 1.2;
+    iOutlineColor = sqrt(iOutlineColor) * (1 + (OUTLINE_MIX * 0.2));
     iOutlineColor *= iOutlineColor;
     iOutlineMask = 1.0 - iOutlineMask;
 

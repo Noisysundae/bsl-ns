@@ -6,6 +6,9 @@ https://bitslablab.com
 //Settings//
 #include "/lib/settings.glsl"
 
+//BSL-NS//
+#include "/ns/features/cpf.glsl"
+
 //Fragment Shader///////////////////////////////////////////////////////////////////////////////////
 #ifdef FSH
 
@@ -155,6 +158,8 @@ void main() {
 	if (albedo.a > 0.999) albedo.a *= float(difference > opaqueThreshold);
 	else albedo.a *= difference;
 	#endif
+
+	albedo.a *= getPf();
 	
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = albedo;

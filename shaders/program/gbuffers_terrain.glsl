@@ -6,6 +6,9 @@ https://bitslablab.com
 //Settings//
 #include "/lib/settings.glsl"
 
+//BSL-NS//
+#include "/ns/features/cpf.glsl"
+
 //Fragment Shader///////////////////////////////////////////////////////////////////////////////////
 #ifdef FSH
 
@@ -18,6 +21,8 @@ varying vec3 normal;
 varying vec3 sunVec, upVec, eastVec;
 
 varying vec4 color;
+
+varying float entity;
 
 #ifdef ADVANCED_MATERIALS
 varying float dist;
@@ -346,6 +351,30 @@ void main() {
 		#endif
 	} else albedo.a = 0.0;
 
+	if (abs(entity - 10100) < 0.1
+		|| abs(entity - 10101) < 0.1
+		|| abs(entity - 10102) < 0.1
+		|| abs(entity - 10103) < 0.1
+		|| abs(entity - 10104) < 0.1
+		|| abs(entity - 10105) < 0.1
+		|| abs(entity - 10106) < 0.1
+		|| abs(entity - 10107) < 0.1
+		|| abs(entity - 10108) < 0.1
+		|| abs(entity - 10109) < 0.1
+		|| abs(entity - 10200) < 0.1
+		|| abs(entity - 10203) < 0.1
+		|| abs(entity - 10204) < 0.1
+		|| abs(entity - 10207) < 0.1
+		|| abs(entity - 10208) < 0.1
+		|| abs(entity - 10300) < 0.1
+		|| abs(entity - 10301) < 0.1
+		|| abs(entity - 10400) < 0.1
+		|| abs(entity - 10401) < 0.1
+		|| abs(entity - 10501) < 0.1
+	) {
+		albedo.a *= getPf();
+	}
+
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = albedo;
 
@@ -371,6 +400,8 @@ varying vec3 normal;
 varying vec3 sunVec, upVec, eastVec;
 
 varying vec4 color;
+
+varying float entity;
 
 #ifdef ADVANCED_MATERIALS
 varying float dist;
@@ -455,6 +486,8 @@ void main() {
 	
 	vTexCoord.xy    = sign(texMinMidCoord) * 0.5 + 0.5;
 	#endif
+
+	entity = mc_Entity.x;
     
 	color = gl_Color;
 	
