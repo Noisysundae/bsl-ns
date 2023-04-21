@@ -117,6 +117,10 @@ float GetLuminance(vec3 color) {
 //Program//
 void main() {
     vec4 albedo = texture2D(texture, texCoord) * color;
+
+	albedo.a *= getPf();
+	if (albedo.a < 0.001) discard;
+
 	vec3 newNormal = normal;
 	float smoothness = 0.0;
 
@@ -308,8 +312,6 @@ void main() {
 		albedo.rgb = sqrt(max(albedo.rgb, vec3(0.0)));
 		#endif
 	}
-
-	albedo.a *= getPf();
 
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = albedo;

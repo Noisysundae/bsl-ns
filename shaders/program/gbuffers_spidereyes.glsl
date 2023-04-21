@@ -23,6 +23,10 @@ uniform sampler2D texture;
 //Program//
 void main() {
     vec4 albedo = texture2D(texture, texCoord) * color;
+
+	albedo.a *= getPf();
+	if (albedo.a < 0.001) discard;
+
     albedo.rgb = pow(albedo.rgb,vec3(2.2)) * 4.0;
 	
     #ifdef WHITE_WORLD
@@ -32,8 +36,6 @@ void main() {
 	#if ALPHA_BLEND == 0
 	albedo.rgb = sqrt(max(albedo.rgb, vec3(0.0)));
 	#endif
-
-	albedo.a *= getPf();
 	
     /* DRAWBUFFERS:0 */
 	gl_FragData[0] = albedo;

@@ -96,6 +96,9 @@ float GetLinearDepth(float depth) {
 void main() {
     vec4 albedo = texture2D(texture, texCoord) * color;
 
+	albedo.a *= getPf();
+	if (albedo.a < 0.001) discard;
+
 	if (albedo.a > 0.001) {
 		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
 
@@ -158,8 +161,6 @@ void main() {
 	if (albedo.a > 0.999) albedo.a *= float(difference > opaqueThreshold);
 	else albedo.a *= difference;
 	#endif
-
-	albedo.a *= getPf();
 	
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = albedo;
