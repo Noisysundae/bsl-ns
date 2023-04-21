@@ -295,7 +295,7 @@ void main() {
 		#endif
 	}
 
-	albedo.a *= getPf(true);
+	albedo.a *= getPf();
 
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = albedo;
