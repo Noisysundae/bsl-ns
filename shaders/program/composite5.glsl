@@ -45,11 +45,19 @@ uniform mat4 gbufferProjection;
 uniform vec3 cameraPosition;
 #endif
 
+#ifdef MULTICOLORED_BLOCKLIGHT
+uniform sampler2D colortex9;
+#endif
+
 //Optifine Constants//
 const bool colortex2Clear = false;
 
 #ifdef AUTO_EXPOSURE
 const bool colortex0MipmapEnabled = true;
+#endif
+
+#ifdef MULTICOLORED_BLOCKLIGHT
+const bool colortex9MipmapEnabled = true;
 #endif
 
 //Common Variables//
@@ -94,20 +102,20 @@ void RetroDither(inout vec3 color, float dither) {
 vec3 GetBloomTile(float lod, vec2 coord, vec2 offset) {
 	float scale = exp2(lod);
 	float resScale = 1.25 * min(360.0, viewHeight) / viewHeight;
-	vec2 centerOffset = vec2(0.125 * pw, 0.25 * ph);
-	vec3 bloom = texture2D(colortex1, (coord / scale + offset) * resScale + centerOffset).rgb;
+	vec3 bloom = texture2D(colortex1, (coord / scale + offset) * resScale).rgb;
 	bloom *= bloom; bloom *= bloom * 32.0;
 	return bloom;
 }
 
 void Bloom(inout vec3 color, vec2 coord) {
-	vec3 blur1 = GetBloomTile(1.0, coord, vec2(0.0      , 0.0   ));
-	vec3 blur2 = GetBloomTile(2.0, coord, vec2(0.51     , 0.0   ));
-	vec3 blur3 = GetBloomTile(3.0, coord, vec2(0.51     , 0.26  ));
-	vec3 blur4 = GetBloomTile(4.0, coord, vec2(0.645    , 0.26  ));
-	vec3 blur5 = GetBloomTile(5.0, coord, vec2(0.7175   , 0.26  ));
-	vec3 blur6 = GetBloomTile(6.0, coord, vec2(0.645    , 0.3325));
-	vec3 blur7 = GetBloomTile(7.0, coord, vec2(0.670625 , 0.3325));
+	vec2 view = vec2(1.0 / viewWidth, 1.0 / viewHeight);
+	vec3 blur1 = GetBloomTile(1.0, coord, vec2(0.0      , 0.0   ) + vec2( 0.5, 0.0) * view);
+	vec3 blur2 = GetBloomTile(2.0, coord, vec2(0.50     , 0.0   ) + vec2( 4.5, 0.0) * view);
+	vec3 blur3 = GetBloomTile(3.0, coord, vec2(0.50     , 0.25  ) + vec2( 4.5, 4.0) * view);
+	vec3 blur4 = GetBloomTile(4.0, coord, vec2(0.625    , 0.25  ) + vec2( 8.5, 4.0) * view);
+	vec3 blur5 = GetBloomTile(5.0, coord, vec2(0.6875   , 0.25  ) + vec2(12.5, 4.0) * view);
+	vec3 blur6 = GetBloomTile(6.0, coord, vec2(0.625    , 0.3125) + vec2( 8.5, 8.0) * view);
+	vec3 blur7 = GetBloomTile(7.0, coord, vec2(0.640625 , 0.3125) + vec2(12.5, 8.0) * view);
 	
 	#ifdef DIRTY_LENS
 	float newAspectRatio = 1.777777777777778 / aspectRatio;
@@ -235,7 +243,7 @@ void main() {
 	#endif
 	
 	#ifdef RETRO_FILTER
-	float dither = Bayer64(gl_FragCoord.xy);
+	float dither = Bayer8(gl_FragCoord.xy);
 	RetroDither(color.rgb, dither);
 	#endif
 	
@@ -294,10 +302,20 @@ void main() {
 	
 	float filmGrain = texture2D(noisetex, texCoord * vec2(viewWidth, viewHeight) / 512.0).b;
 	color += (filmGrain - 0.5) / 256.0;
+
+	#ifdef MULTICOLORED_BLOCKLIGHT
+	vec3 coloredLight = texture2DLod(colortex9, texCoord.xy, 2).rgb;
+	coloredLight *= 0.99;
+	#endif
 	
 	/* DRAWBUFFERS:12 */
 	gl_FragData[0] = vec4(color, 1.0);
 	gl_FragData[1] = vec4(temporalData,temporalColor);
+	
+	#ifdef MULTICOLORED_BLOCKLIGHT
+		/*DRAWBUFFERS:129*/
+		gl_FragData[2] = vec4(coloredLight, 1.0);
+	#endif
 }
 
 #endif

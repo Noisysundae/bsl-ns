@@ -70,6 +70,11 @@ uniform int heldBlockLightValue;
 uniform int heldBlockLightValue2;
 #endif
 
+#ifdef MULTICOLORED_BLOCKLIGHT
+uniform sampler2D colortex8;
+uniform sampler2D colortex9;
+#endif
+
 //Common Variables//
 float eBS = eyeBrightnessSmooth.y / 240.0;
 float sunVisibility  = clamp((dot( sunVec, upVec) + 0.05) * 10.0, 0.0, 1.0);
@@ -188,11 +193,16 @@ vec3 GetWaterNormal(vec3 worldPos, vec3 viewPos, vec3 viewVector) {
 #endif
 #endif
 
+#ifdef MULTICOLORED_BLOCKLIGHT
+#include "/lib/lighting/coloredBlocklight.glsl"
+#endif
+
 //Program//
 void main() {
     vec4 albedo = texture2D(texture, texCoord) * vec4(color.rgb, 1.0);
 	vec3 newNormal = normal;
 	float smoothness = 0.0;
+	vec3 lightAlbedo = vec3(0.0);
 	
 	#ifdef ADVANCED_MATERIALS
 	vec2 newCoord = vTexCoord.st * vTexCoordAM.pq + vTexCoordAM.st;
@@ -217,12 +227,15 @@ void main() {
 		float water       = float(mat > 0.98 && mat < 1.02);
 		float glass 	  = float(mat > 1.98 && mat < 2.02);
 		float translucent = float(mat > 2.98 && mat < 3.02);
+		float portal      = float(mat > 3.98 && mat < 4.02);
 		
 		float metalness       = 0.0;
-		float emission        = 0.0;
+		float emission        = portal * 0.4;
 		float subsurface      = 0.0;
 		float basicSubsurface = water;
 		vec3 baseReflectance  = vec3(0.04);
+		
+		emission *= dot(albedo.rgb, albedo.rgb) * 0.333;
 		
 		#ifndef REFLECTION_TRANSLUCENT
 		glass = 0.0;
@@ -237,7 +250,7 @@ void main() {
 		#endif
 		vec3 worldPos = ToWorld(viewPos);
 
-		float dither = Bayer64(gl_FragCoord.xy);
+		float dither = Bayer8(gl_FragCoord.xy);
 
 		vec3 normalMap = vec3(0.0, 0.0, 1.0);
 		
@@ -281,6 +294,23 @@ void main() {
 		#endif
 
     	albedo.rgb = pow(albedo.rgb, vec3(2.2));
+		
+		vlAlbedo = mix(vec3(1.0), albedo.rgb, sqrt(albedo.a)) * (1.0 - pow(albedo.a, 64.0));
+
+		#ifdef MULTICOLORED_BLOCKLIGHT
+		vec3 opaquelightAlbedo = texture2D(colortex8, screenPos.xy).rgb;
+		if (water < 0.5) {
+			opaquelightAlbedo *= vlAlbedo;
+		}
+		lightAlbedo = albedo.rgb + 0.00001;
+
+		if (portal > 0.5) {
+			lightAlbedo = lightAlbedo * 0.95 + 0.05;
+		}
+
+		lightAlbedo = normalize(lightAlbedo + 0.00001) * emission;
+		lightAlbedo = mix(opaquelightAlbedo, sqrt(lightAlbedo), albedo.a);
+		#endif
 
 		#ifdef WHITE_WORLD
 		albedo.rgb = vec3(0.35);
@@ -302,8 +332,6 @@ void main() {
 			#endif
 			baseReflectance = vec3(0.02);
 		}
-
-		vlAlbedo = mix(vec3(1.0), albedo.rgb, sqrt(albedo.a)) * (1.0 - pow(albedo.a, 64.0));
 		
 		float NoL = clamp(dot(newNormal, lightVec), 0.0, 1.0);
 
@@ -333,6 +361,10 @@ void main() {
 		lightmap.x = DirectionalLightmap(lightmap.x, lmCoord.x, newNormal, lightmapTBN);
 		lightmap.y = DirectionalLightmap(lightmap.y, lmCoord.y, newNormal, lightmapTBN);
 		#endif
+		#endif
+
+		#ifdef MULTICOLORED_BLOCKLIGHT
+		blocklightCol = ApplyMultiColoredBlocklight(blocklightCol, screenPos);
 		#endif
 		
 		vec3 shadow = vec3(0.0);
@@ -550,9 +582,19 @@ void main() {
     /* DRAWBUFFERS:01 */
     gl_FragData[0] = albedo;
 	gl_FragData[1] = vec4(vlAlbedo, 1.0);
-	#if REFRACTION > 0
-	/* DRAWBUFFERS:016 */
-	gl_FragData[2] = vec4(refraction, 1.0);
+
+	#ifdef MULTICOLORED_BLOCKLIGHT
+		/* DRAWBUFFERS:018 */
+		gl_FragData[2] = vec4(lightAlbedo, 1.0);
+		#if REFRACTION > 0
+		/* DRAWBUFFERS:0186 */
+		gl_FragData[3] = vec4(refraction, 1.0);
+		#endif
+	#else
+		#if REFRACTION > 0
+		/* DRAWBUFFERS:016 */
+		gl_FragData[2] = vec4(refraction, 1.0);
+		#endif
 	#endif
 }
 
@@ -660,9 +702,10 @@ void main() {
 	
 	mat = 0.0;
 	
-	if (mc_Entity.x == 10300 || mc_Entity.x == 10303) mat = 1.0;
+	if (mc_Entity.x == 10300 || mc_Entity.x == 10304) mat = 1.0;
 	if (mc_Entity.x == 10301)						  mat = 2.0;
 	if (mc_Entity.x == 10302) 						  mat = 3.0;
+	if (mc_Entity.x == 10303) 						  mat = 4.0;
 
 	const vec2 sunRotationData = vec2(
 		 cos(sunPathRotation * 0.01745329251994),
@@ -679,7 +722,7 @@ void main() {
 	
 	#ifdef WAVING_WATER
 	float istopv = gl_MultiTexCoord0.t < mc_midTexCoord.t ? 1.0 : 0.0;
-	if (mc_Entity.x == 10300 || mc_Entity.x == 10302 || mc_Entity.x == 10303) position.y += WavingWater(position.xyz);
+	if (mc_Entity.x == 10300 || mc_Entity.x == 10302 || mc_Entity.x == 10304) position.y += WavingWater(position.xyz);
 	#endif
 
     #ifdef WORLD_CURVATURE
