@@ -41,7 +41,7 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 	vec3 vl = vec3(0.0);
 
 	#ifdef TAA
-	dither = fract(dither + frameCounter * 1.618);
+	dither = fract(dither + frameCounter * 0.618);
 	#endif
 	
 	vec3 screenPos = vec3(texCoord, pixeldepth0);
@@ -103,7 +103,7 @@ vec3 GetLightShafts(float pixeldepth0, float pixeldepth1, vec3 color, float dith
 						shadowCol = texture2D(shadowcolor0, shadowposition.xy).rgb;
 						shadowCol *= shadowCol * shadow1;
 						#ifdef WATER_CAUSTICS
-						shadowCol *= 16.0;
+						shadowCol *= 16.0 - 15.0 * (1.0 - (1.0 - shadow0) * (1.0 - shadow0));
 						#endif
 					}
 				}
