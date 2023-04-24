@@ -1,3 +1,9 @@
+#include "/ns/features/ca.glsl"
+
+uniform float rainStrength;
+uniform float thunderStrength;
+uniform ivec2 eyeBrightnessSmooth;
+
 const float pi = 3.1415927;
 float pi2wt = 6.2831854 * (frametime * 24.0);
 
@@ -78,6 +84,13 @@ vec3 WavingBlocks(vec3 position, float istopv) {
     vec3 wave = vec3(0.0);
     vec3 worldpos = position + cameraPosition;
 
+    float factor = getCaFactor(
+        worldpos.y,
+        rainStrength,
+        thunderStrength,
+        eyeBrightnessSmooth.y);
+    vec3 nscf = vec3(factor, sqrt(factor), factor);
+
     #ifdef WAVING_GRASS
     if (mc_Entity.x == 10100 && istopv > 0.9)
         wave += CalcMove(worldpos, 0.35, 1.0, vec2(0.25, 0.06));
@@ -128,7 +141,7 @@ vec3 WavingBlocks(vec3 position, float istopv) {
 		wave += CalcLanternMove(worldpos);
     #endif
 
-    position += wave;
+    position += wave * nscf;
 
     return position;
 }

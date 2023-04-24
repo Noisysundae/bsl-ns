@@ -6,6 +6,9 @@ https://bitslablab.com
 //Settings//
 #include "/lib/settings.glsl"
 
+//BSL-NS//
+#include "/ns/features/ca.glsl"
+
 //Fragment Shader///////////////////////////////////////////////////////////////////////////////////
 #ifdef FSH
 
@@ -20,6 +23,9 @@ varying vec3 sunVec, upVec, eastVec;
 varying vec3 viewVector;
 
 varying vec4 color;
+
+varying float entityId;
+varying float nscf;
 
 #ifdef ADVANCED_MATERIALS
 varying vec4 vTexCoord, vTexCoordAM;
@@ -120,7 +126,7 @@ float GetWaterHeightMap(vec3 worldPos, vec2 offset) {
 	noise = mix(noiseA, noiseB, WATER_DETAIL);
 	#endif
 
-    return noise * WATER_BUMP;
+	return noise * WATER_BUMP * sqrt(nscf);
 }
 
 vec3 GetParallaxWaves(vec3 worldPos, vec3 viewVector) {
@@ -615,6 +621,9 @@ varying vec3 viewVector;
 
 varying vec4 color;
 
+varying float entityId;
+varying float nscf;
+
 #ifdef ADVANCED_MATERIALS
 varying vec4 vTexCoord, vTexCoordAM;
 #endif
@@ -624,6 +633,10 @@ uniform int worldTime;
 
 uniform float frameTimeCounter;
 uniform float timeAngle;
+
+uniform float rainStrength;
+uniform float thunderStrength;
+uniform ivec2 eyeBrightnessSmooth;
 
 uniform vec3 cameraPosition;
 
@@ -707,6 +720,8 @@ void main() {
 	if (mc_Entity.x == 10302) 						  mat = 3.0;
 	if (mc_Entity.x == 10303) 						  mat = 4.0;
 
+	entityId = mc_Entity.x;
+
 	const vec2 sunRotationData = vec2(
 		 cos(sunPathRotation * 0.01745329251994),
 		-sin(sunPathRotation * 0.01745329251994)
@@ -722,7 +737,14 @@ void main() {
 	
 	#ifdef WAVING_WATER
 	float istopv = gl_MultiTexCoord0.t < mc_midTexCoord.t ? 1.0 : 0.0;
-	if (mc_Entity.x == 10300 || mc_Entity.x == 10302 || mc_Entity.x == 10304) position.y += WavingWater(position.xyz);
+
+	nscf = getCaFactor(
+		position.y + cameraPosition.y,
+		rainStrength,
+		thunderStrength,
+		eyeBrightnessSmooth.y);
+	if (mc_Entity.x == 10300 || mc_Entity.x == 10302 || mc_Entity.x == 10304)
+		position.y += WavingWater(position.xyz) * sqrt(nscf);
 	#endif
 
     #ifdef WORLD_CURVATURE
