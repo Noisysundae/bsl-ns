@@ -45,19 +45,29 @@ uniform sampler2D depthtex1;
 uniform sampler2DShadow shadowtex0;
 uniform sampler2DShadow shadowtex1;
 uniform sampler2D shadowcolor0;
-#ifdef END
 uniform sampler2D noisetex;
-#endif
 #endif
 
 #if REFRACTION > 0
 uniform sampler2D colortex6;
 #endif
 
-//Attributes//
+#ifdef MULTICOLORED_BLOCKLIGHT
+uniform vec3 previousCameraPosition;
+
+uniform mat4 gbufferPreviousModelView;
+uniform mat4 gbufferPreviousProjection;
+
+uniform sampler2D colortex8;
+uniform sampler2D colortex9;
+#endif
 
 //Optifine Constants//
 const bool colortex5Clear = false;
+
+#ifdef MULTICOLORED_BLOCKLIGHT
+const bool colortex9Clear = false;
+#endif
 
 //Common Variables//
 float eBS = eyeBrightnessSmooth.y / 240.0;
@@ -77,6 +87,53 @@ float GetLuminance(vec3 color) {
 float GetLinearDepth(float depth) {
    return (2.0 * near) / (far + near - depth * (far - near));
 }
+
+#ifdef MULTICOLORED_BLOCKLIGHT
+vec2 Reprojection(vec3 pos) {
+	pos = pos * 2.0 - 1.0;
+
+	vec4 viewPosPrev = gbufferProjectionInverse * vec4(pos, 1.0);
+	viewPosPrev /= viewPosPrev.w;
+	viewPosPrev = gbufferModelViewInverse * viewPosPrev;
+
+	vec3 cameraOffset = cameraPosition - previousCameraPosition;
+	cameraOffset *= float(pos.z > 0.56);
+
+	vec4 previousPosition = viewPosPrev + vec4(cameraOffset, 0.0);
+	previousPosition = gbufferPreviousModelView * previousPosition;
+	previousPosition = gbufferPreviousProjection * previousPosition;
+	return previousPosition.xy / previousPosition.w * 0.5 + 0.5;
+}
+
+vec2 OffsetDist(float x) {
+	float n = fract(x * 8.0) * 6.283;
+    return vec2(cos(n), sin(n)) * x * x;
+}
+
+vec3 GetMultiColoredBlocklight(vec2 coord, float z, float dither) {
+	vec2 prevCoord = Reprojection(vec3(coord, z));
+	float lz = GetLinearDepth(z);
+
+	float distScale = clamp((far - near) * lz + near, 4.0, 128.0);
+	float fovScale = gbufferProjection[1][1] / 1.37;
+
+	vec2 blurstr = vec2(1.0 / aspectRatio, 1.0) * 2.5 * fovScale / distScale;
+	vec3 lightAlbedo = texture2D(colortex8, coord).rgb;
+	vec3 previousColoredLight = vec3(0.0);
+
+	float mask = clamp(2.0 - 2.0 * max(abs(prevCoord.x - 0.5), abs(prevCoord.y - 0.5)), 0.0, 1.0);
+
+	for(int i = 0; i < 4; i++) {
+		vec2 offset = OffsetDist((dither + i) * 0.25) * blurstr;
+		previousColoredLight += texture2D(colortex9, prevCoord.xy + offset).rgb;
+	}
+
+	previousColoredLight *= 0.25;
+	previousColoredLight *= previousColoredLight * mask;
+
+	return sqrt(mix(previousColoredLight, lightAlbedo * lightAlbedo / 0.05, 0.05));
+}
+#endif
 
 //Includes//
 #include "/lib/color/dimensionColor.glsl"
@@ -170,8 +227,8 @@ void main() {
 	#endif
 	
 	#ifdef LIGHT_SHAFT
-	float dither = Bayer64(gl_FragCoord.xy);
-	vec3 vl = GetLightShafts(z0, z1, translucent, dither);
+	float blueNoise = texture2D(noisetex, gl_FragCoord.xy/512.0).b;
+	vec3 vl = GetLightShafts(z0, z1, translucent, blueNoise);
 	#else
 	vec3 vl = vec3(0.0);
     #endif
@@ -179,14 +236,30 @@ void main() {
 	color.rgb *= clamp(1.0 - 2.0 * darknessLightFactor, 0.0, 1.0);
 
 	vec3 reflectionColor = pow(color.rgb, vec3(0.125)) * 0.5;
+
+	#ifdef MULTICOLORED_BLOCKLIGHT
+	float dither = Bayer8(gl_FragCoord.xy);
+	float lightZ = z1 >= 1.0 ? z0 : z1;
+	vec3 coloredLight = GetMultiColoredBlocklight(texCoord, lightZ, dither);
+	#endif
 	
     /*DRAWBUFFERS:01*/
 	gl_FragData[0] = color;
 	gl_FragData[1] = vec4(vl, 1.0);
+
+	#ifdef MULTICOLORED_BLOCKLIGHT
+		/*DRAWBUFFERS:019*/
+		gl_FragData[2] = vec4(coloredLight, 1.0);
 	
-    #ifdef REFLECTION_PREVIOUS
-    /*DRAWBUFFERS:015*/
-	gl_FragData[2] = vec4(reflectionColor, float(z0 < 1.0));
+		#ifdef REFLECTION_PREVIOUS
+		/*DRAWBUFFERS:0195*/
+		gl_FragData[3] = vec4(reflectionColor, float(z0 < 1.0));
+		#endif
+	#else
+		#ifdef REFLECTION_PREVIOUS
+		/*DRAWBUFFERS:015*/
+		gl_FragData[2] = vec4(reflectionColor, float(z0 < 1.0));
+		#endif
 	#endif
 }
 
