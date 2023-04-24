@@ -210,7 +210,7 @@ void main() {
 	
 	mat = 0;
 	if (mc_Entity.x == 10301 || mc_Entity.x == 10302) mat = 1;
-	if (mc_Entity.x == 10300 || mc_Entity.x == 10303) mat = 2;
+	if (mc_Entity.x == 10300 || mc_Entity.x == 10304) mat = 2;
 	
 	#ifndef SHADOW_VEGETATION
 	if (mc_Entity.x >= 10100 && mc_Entity.x <= 10104) mat = 3;
