@@ -821,6 +821,8 @@ option.NS_CA_ENABLED=Climatic Animations (CA)
 option.NS_CA_ENABLED.comment=Apply environment factors to waving objects and water (climate, indoor / outdoor, etc.), as well as some improvement related to animations.
 screen.NS_CA=CA Settings...
 screen.NS_CA.comment=Expand other CA settings.
+option.NS_CA_WORLD_TIME_ENABLED=Smooth World Time
+option.NS_CA_WORLD_TIME_ENABLED.comment=World time trade-off: Goes beyond 20 FPS plus a cool time stop on pausing, but resets itself every in-game month.
 option.NS_CA_TEMPERATURE_WEIGHT=Temperature Weight
 option.NS_CA_TEMPERATURE_WEIGHT.comment=More temperate (closer to 0.5 the temperature on the current biome) = windier.
 option.NS_CA_RAINFALL_WEIGHT=Rainfall Weight
