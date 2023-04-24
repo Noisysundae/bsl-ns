@@ -14,21 +14,22 @@ varying vec2 texCoord;
 
 //Uniforms//
 uniform sampler2D colortex1;
-uniform sampler2D shadowcolor0;
 
 uniform float viewWidth, viewHeight;
-uniform float aspectRatio, frameTimeCounter;
+uniform float aspectRatio;
 
 //Optifine Constants//
 /*
 const int colortex0Format = R11F_G11F_B10F; //main scene
 const int colortex1Format = RGB8; //raw translucent, bloom, final scene
 const int colortex2Format = RGBA16; //temporal data
-const int colortex3Format = RGB8; //specular data
+const int colortex3Format = RGB8; //smoothness, sky occlusion, entity mask
 const int gaux1Format = R8; //cloud alpha, ao
 const int gaux2Format = RGB10_A2; //reflection image
-const int gaux3Format = RGB16; //normals
+const int gaux3Format = RGB16; //opaque normals, refraction vector
 const int gaux4Format = RGB16; //fresnel
+const int colortex8Format = RGB8; //colored light
+const int colortex9Format = RGB16; //colored light
 */
 
 const bool shadowHardwareFiltering = true;
@@ -64,6 +65,7 @@ void SharpenFilter(inout vec3 color, vec2 coord) {
 //Program//
 void main() {
     vec2 newTexCoord = texCoord;
+	
 	#ifdef RETRO_FILTER
     vec2 view = vec2(viewWidth, viewHeight) * 0.5;
 	newTexCoord = floor(newTexCoord * view) / view;

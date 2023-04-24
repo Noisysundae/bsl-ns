@@ -19,7 +19,6 @@ varying vec4 color;
 
 //Uniforms//
 uniform int isEyeInWater;
-uniform int worldTime;
 
 uniform float rainStrength;
 uniform float timeAngle, timeBrightness;

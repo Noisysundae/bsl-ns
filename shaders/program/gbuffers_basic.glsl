@@ -20,9 +20,7 @@ varying vec4 color;
 //Uniforms//
 uniform int frameCounter;
 uniform int isEyeInWater;
-uniform int worldTime;
 
-uniform float frameTimeCounter;
 uniform float nightVision;
 uniform float rainStrength;
 uniform float screenBrightness; 
@@ -44,16 +42,18 @@ uniform int heldBlockLightValue;
 uniform int heldBlockLightValue2;
 #endif
 
+#ifdef MULTICOLORED_BLOCKLIGHT
+uniform mat4 gbufferPreviousModelView;
+uniform mat4 gbufferPreviousProjection;
+uniform vec3 previousCameraPosition;
+
+uniform sampler2D colortex9;
+#endif
+
 //Common Variables//
 float eBS = eyeBrightnessSmooth.y / 240.0;
 float sunVisibility  = clamp((dot( sunVec, upVec) + 0.05) * 10.0, 0.0, 1.0);
 float moonVisibility = clamp((dot(-sunVec, upVec) + 0.05) * 10.0, 0.0, 1.0);
-
-#ifdef WORLD_TIME_ANIMATION
-float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
-#else
-float frametime = frameTimeCounter * ANIMATION_SPEED;
-#endif
 
 vec3 lightVec = sunVec * ((timeAngle < 0.5325 || timeAngle > 0.9675) ? 1.0 : -1.0);
 
@@ -70,6 +70,10 @@ float GetLuminance(vec3 color) {
 
 #ifdef TAA
 #include "/lib/util/jitter.glsl"
+#endif
+
+#ifdef MULTICOLORED_BLOCKLIGHT
+#include "/lib/lighting/coloredBlocklight.glsl"
 #endif
 
 //Program//
@@ -111,6 +115,10 @@ void main() {
 		float NoE = clamp(dot(normal, eastVec), -1.0, 1.0);
 		float vanillaDiffuse = (0.25 * NoU + 0.75) + (0.667 - abs(NoE)) * (1.0 - abs(NoU)) * 0.15;
 			  vanillaDiffuse*= vanillaDiffuse;
+
+		#ifdef MULTICOLORED_BLOCKLIGHT
+		blocklightCol = ApplyMultiColoredBlocklight(blocklightCol, screenPos);
+		#endif
 		
 		vec3 shadow = vec3(0.0);
 		GetLighting(albedo.rgb, shadow, viewPos, worldPos, lightmap, 1.0, NoL, vanillaDiffuse,
@@ -124,11 +132,23 @@ void main() {
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = albedo;
 
-	#ifdef ADVANCED_MATERIALS
-	/* DRAWBUFFERS:0367 */
-	gl_FragData[1] = vec4(0.0, 0.0, 0.0, 1.0);
-	gl_FragData[2] = vec4(0.0, 0.0, float(gl_FragCoord.z < 1.0), 1.0);
-	gl_FragData[3] = vec4(0.0, 0.0, 0.0, 1.0);
+	#ifdef MULTICOLORED_BLOCKLIGHT
+	    /* DRAWBUFFERS:08 */
+		gl_FragData[1] = vec4(0.0,0.0,0.0,1.0);
+
+		#ifdef ADVANCED_MATERIALS
+		/* DRAWBUFFERS:08367 */
+		gl_FragData[2] = vec4(0.0, 0.0, 0.0, 1.0);
+		gl_FragData[3] = vec4(0.0, 0.0, float(gl_FragCoord.z < 1.0), 1.0);
+		gl_FragData[4] = vec4(0.0, 0.0, 0.0, 1.0);
+		#endif
+	#else
+		#ifdef ADVANCED_MATERIALS
+		/* DRAWBUFFERS:0367 */
+		gl_FragData[1] = vec4(0.0, 0.0, 0.0, 1.0);
+		gl_FragData[2] = vec4(0.0, 0.0, float(gl_FragCoord.z < 1.0), 1.0);
+		gl_FragData[3] = vec4(0.0, 0.0, 0.0, 1.0);
+		#endif
 	#endif
 }
 
@@ -146,9 +166,6 @@ varying vec3 sunVec, upVec, eastVec;
 varying vec4 color;
 
 //Uniforms//
-uniform int worldTime;
-
-uniform float frameTimeCounter;
 uniform float timeAngle;
 
 uniform vec3 cameraPosition;
@@ -167,11 +184,6 @@ attribute vec4 mc_Entity;
 attribute vec4 mc_midTexCoord;
 
 //Common Variables//
-#ifdef WORLD_TIME_ANIMATION
-float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
-#else
-float frametime = frameTimeCounter * ANIMATION_SPEED;
-#endif
 
 //Includes//
 #ifdef TAA

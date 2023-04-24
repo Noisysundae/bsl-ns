@@ -33,9 +33,7 @@ varying vec4 vTexCoord, vTexCoordAM;
 uniform int blockEntityId;
 uniform int frameCounter;
 uniform int isEyeInWater;
-uniform int worldTime;
 
-uniform float frameTimeCounter;
 uniform float nightVision;
 uniform float rainStrength;
 uniform float screenBrightness; 
@@ -67,16 +65,18 @@ uniform int heldBlockLightValue;
 uniform int heldBlockLightValue2;
 #endif
 
+#ifdef MULTICOLORED_BLOCKLIGHT
+uniform mat4 gbufferPreviousModelView;
+uniform mat4 gbufferPreviousProjection;
+uniform vec3 previousCameraPosition;
+
+uniform sampler2D colortex9;
+#endif
+
 //Common Variables//
 float eBS = eyeBrightnessSmooth.y / 240.0;
 float sunVisibility  = clamp((dot( sunVec, upVec) + 0.05) * 10.0, 0.0, 1.0);
 float moonVisibility = clamp((dot(-sunVec, upVec) + 0.05) * 10.0, 0.0, 1.0);
-
-#ifdef WORLD_TIME_ANIMATION
-float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
-#else
-float frametime = frameTimeCounter * ANIMATION_SPEED;
-#endif
 
 #ifdef ADVANCED_MATERIALS
 vec2 dcdx = dFdx(texCoord);
@@ -109,6 +109,10 @@ float GetLuminance(vec3 color) {
 #include "/lib/surface/parallax.glsl"
 #endif
 
+#ifdef MULTICOLORED_BLOCKLIGHT
+#include "/lib/lighting/coloredBlocklight.glsl"
+#endif
+
 #ifdef NORMAL_SKIP
 #undef PARALLAX
 #undef SELF_SHADOW
@@ -117,8 +121,13 @@ float GetLuminance(vec3 color) {
 //Program//
 void main() {
     vec4 albedo = texture2D(texture, texCoord) * color;
+
+	albedo.a *= getPf();
+	if (albedo.a < 0.001) discard;
+
 	vec3 newNormal = normal;
 	float smoothness = 0.0;
+	vec3 lightAlbedo = vec3(0.0);
 
 	#ifdef ADVANCED_MATERIALS
 	vec2 newCoord = vTexCoord.st * vTexCoordAM.pq + vTexCoordAM.st;
@@ -202,6 +211,11 @@ void main() {
 		}
 		#endif
 
+		#ifdef MULTICOLORED_BLOCKLIGHT
+		lightAlbedo = albedo.rgb + 0.00001;
+		lightAlbedo = sqrt(normalize(lightAlbedo) * emission);
+		#endif
+
 		#ifdef WHITE_WORLD
 		albedo.rgb = vec3(0.35);
 		#endif
@@ -236,6 +250,10 @@ void main() {
 											   tbnMatrix);
 		}
 		#endif
+		#endif
+
+		#ifdef MULTICOLORED_BLOCKLIGHT
+		blocklightCol = ApplyMultiColoredBlocklight(blocklightCol, screenPos);
 		#endif
 		
 		vec3 shadow = vec3(0.0);
@@ -303,22 +321,34 @@ void main() {
 		
 		albedo.rgb = portal * portal * portCol.rgb;
 		albedo.a = 1.0;
+
+		lightAlbedo = normalize(albedo.rgb * 20.0 + 0.00001);
 		
 		#if ALPHA_BLEND == 0
 		albedo.rgb = sqrt(max(albedo.rgb, vec3(0.0)));
 		#endif
 	}
 
-	albedo.a *= getPf();
-
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = albedo;
 
-	#if defined ADVANCED_MATERIALS && defined REFLECTION_SPECULAR
-	/* DRAWBUFFERS:0367 */
-	gl_FragData[1] = vec4(smoothness, skyOcclusion, 0.0, 1.0);
-	gl_FragData[2] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
-	gl_FragData[3] = vec4(fresnel3, 1.0);
+	#ifdef MULTICOLORED_BLOCKLIGHT
+		/* DRAWBUFFERS:08 */
+		gl_FragData[1] = vec4(lightAlbedo, 1.0);
+
+		#if defined ADVANCED_MATERIALS && defined REFLECTION_SPECULAR
+		/* DRAWBUFFERS:08367 */
+		gl_FragData[2] = vec4(smoothness, skyOcclusion, 0.0, 1.0);
+		gl_FragData[3] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
+		gl_FragData[4] = vec4(fresnel3, 1.0);
+		#endif
+	#else
+		#if defined ADVANCED_MATERIALS && defined REFLECTION_SPECULAR
+		/* DRAWBUFFERS:0367 */
+		gl_FragData[1] = vec4(smoothness, skyOcclusion, 0.0, 1.0);
+		gl_FragData[2] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
+		gl_FragData[3] = vec4(fresnel3, 1.0);
+		#endif
 	#endif
 }
 
@@ -345,9 +375,6 @@ varying vec4 vTexCoord, vTexCoordAM;
 #endif
 
 //Uniforms//
-uniform int worldTime;
-
-uniform float frameTimeCounter;
 uniform float timeAngle;
 
 uniform vec3 cameraPosition;
@@ -369,11 +396,6 @@ attribute vec4 at_tangent;
 #endif
 
 //Common Variables//
-#ifdef WORLD_TIME_ANIMATION
-float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
-#else
-float frametime = frameTimeCounter * ANIMATION_SPEED;
-#endif
 
 //Includes//
 #ifdef TAA

@@ -22,7 +22,7 @@ varying vec3 sunVec, upVec, eastVec;
 
 varying vec4 color;
 
-varying float entity;
+varying float entityId;
 
 #ifdef ADVANCED_MATERIALS
 varying float dist;
@@ -36,9 +36,7 @@ varying vec4 vTexCoord, vTexCoordAM;
 //Uniforms//
 uniform int frameCounter;
 uniform int isEyeInWater;
-uniform int worldTime;
 
-uniform float frameTimeCounter;
 uniform float nightVision;
 uniform float rainStrength;
 uniform float screenBrightness; 
@@ -77,16 +75,18 @@ uniform int heldBlockLightValue;
 uniform int heldBlockLightValue2;
 #endif
 
+#ifdef MULTICOLORED_BLOCKLIGHT
+uniform mat4 gbufferPreviousModelView;
+uniform mat4 gbufferPreviousProjection;
+uniform vec3 previousCameraPosition;
+
+uniform sampler2D colortex9;
+#endif
+
 //Common Variables//
 float eBS = eyeBrightnessSmooth.y / 240.0;
 float sunVisibility  = clamp((dot( sunVec, upVec) + 0.05) * 10.0, 0.0, 1.0);
 float moonVisibility = clamp((dot(-sunVec, upVec) + 0.05) * 10.0, 0.0, 1.0);
-
-#ifdef WORLD_TIME_ANIMATION
-float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
-#else
-float frametime = frameTimeCounter * ANIMATION_SPEED;
-#endif
 
 #ifdef ADVANCED_MATERIALS
 vec2 dcdx = dFdx(texCoord);
@@ -124,11 +124,42 @@ float GetLuminance(vec3 color) {
 #endif
 #endif
 
+#ifdef MULTICOLORED_BLOCKLIGHT
+#include "/lib/lighting/coloredBlocklight.glsl"
+#endif
+
 //Program//
 void main() {
     vec4 albedo = texture2D(texture, texCoord) * vec4(color.rgb, 1.0);
+
+	if (abs(entityId - 10100) < 0.1
+		|| abs(entityId - 10101) < 0.1
+		|| abs(entityId - 10102) < 0.1
+		|| abs(entityId - 10103) < 0.1
+		|| abs(entityId - 10104) < 0.1
+		|| abs(entityId - 10105) < 0.1
+		|| abs(entityId - 10106) < 0.1
+		|| abs(entityId - 10107) < 0.1
+		|| abs(entityId - 10108) < 0.1
+		|| abs(entityId - 10109) < 0.1
+		|| abs(entityId - 10200) < 0.1
+		|| abs(entityId - 10203) < 0.1
+		|| abs(entityId - 10204) < 0.1
+		|| abs(entityId - 10207) < 0.1
+		|| abs(entityId - 10208) < 0.1
+		|| abs(entityId - 10300) < 0.1
+		|| abs(entityId - 10301) < 0.1
+		|| abs(entityId - 10400) < 0.1
+		|| abs(entityId - 10401) < 0.1
+		|| abs(entityId - 10501) < 0.1
+	) {
+		albedo.a *= getPf();
+		if (albedo.a < 0.001) discard;
+	}
+
 	vec3 newNormal = normal;
 	float smoothness = 0.0;
+	vec3 lightAlbedo = vec3(0.0);
 
 	#ifdef ADVANCED_MATERIALS
 	vec2 newCoord = vTexCoord.st * vTexCoordAM.pq + vTexCoordAM.st;
@@ -212,6 +243,14 @@ void main() {
 		#else
 		#endif
 
+		#ifdef MULTICOLORED_BLOCKLIGHT
+		lightAlbedo = albedo.rgb + 0.00001;
+		if (lava > 0.5) {
+			lightAlbedo = sqrt(lightAlbedo) * 0.98 + 0.02;
+		}
+		lightAlbedo = sqrt(normalize(lightAlbedo) * emission);
+		#endif
+
 		#ifdef WHITE_WORLD
 		albedo.rgb = vec3(0.35);
 		#endif
@@ -268,6 +307,10 @@ void main() {
 		lightmap.x = DirectionalLightmap(lightmap.x, lmCoord.x, outNormal, lightmapTBN);
 		lightmap.y = DirectionalLightmap(lightmap.y, lmCoord.y, outNormal, lightmapTBN);
 		#endif
+		#endif
+
+		#ifdef MULTICOLORED_BLOCKLIGHT
+		blocklightCol = ApplyMultiColoredBlocklight(blocklightCol, screenPos);
 		#endif
 		
 		vec3 shadow = vec3(0.0);
@@ -351,38 +394,26 @@ void main() {
 		#endif
 	} else albedo.a = 0.0;
 
-	if (abs(entity - 10100) < 0.1
-		|| abs(entity - 10101) < 0.1
-		|| abs(entity - 10102) < 0.1
-		|| abs(entity - 10103) < 0.1
-		|| abs(entity - 10104) < 0.1
-		|| abs(entity - 10105) < 0.1
-		|| abs(entity - 10106) < 0.1
-		|| abs(entity - 10107) < 0.1
-		|| abs(entity - 10108) < 0.1
-		|| abs(entity - 10109) < 0.1
-		|| abs(entity - 10200) < 0.1
-		|| abs(entity - 10203) < 0.1
-		|| abs(entity - 10204) < 0.1
-		|| abs(entity - 10207) < 0.1
-		|| abs(entity - 10208) < 0.1
-		|| abs(entity - 10300) < 0.1
-		|| abs(entity - 10301) < 0.1
-		|| abs(entity - 10400) < 0.1
-		|| abs(entity - 10401) < 0.1
-		|| abs(entity - 10501) < 0.1
-	) {
-		albedo.a *= getPf();
-	}
-
     /* DRAWBUFFERS:0 */
     gl_FragData[0] = albedo;
 
-	#if defined ADVANCED_MATERIALS && defined REFLECTION_SPECULAR
-	/* DRAWBUFFERS:0367 */
-	gl_FragData[1] = vec4(smoothness, skyOcclusion, 0.0, 1.0);
-	gl_FragData[2] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
-	gl_FragData[3] = vec4(fresnel3, 1.0);
+	#ifdef MULTICOLORED_BLOCKLIGHT
+		/* DRAWBUFFERS:08 */
+		gl_FragData[1] = vec4(lightAlbedo, 1.0);
+
+		#if defined ADVANCED_MATERIALS && defined REFLECTION_SPECULAR
+		/* DRAWBUFFERS:08367 */
+		gl_FragData[2] = vec4(smoothness, skyOcclusion, 0.0, 1.0);
+		gl_FragData[3] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
+		gl_FragData[4] = vec4(fresnel3, 1.0);
+		#endif
+	#else
+		#if defined ADVANCED_MATERIALS && defined REFLECTION_SPECULAR
+		/* DRAWBUFFERS:0367 */
+		gl_FragData[1] = vec4(smoothness, skyOcclusion, 0.0, 1.0);
+		gl_FragData[2] = vec4(EncodeNormal(newNormal), float(gl_FragCoord.z < 1.0), 1.0);
+		gl_FragData[3] = vec4(fresnel3, 1.0);
+		#endif
 	#endif
 }
 
@@ -401,7 +432,7 @@ varying vec3 sunVec, upVec, eastVec;
 
 varying vec4 color;
 
-varying float entity;
+varying float entityId;
 
 #ifdef ADVANCED_MATERIALS
 varying float dist;
@@ -413,9 +444,6 @@ varying vec4 vTexCoord, vTexCoordAM;
 #endif
 
 //Uniforms//
-uniform int worldTime;
-
-uniform float frameTimeCounter;
 uniform float timeAngle;
 
 uniform vec3 cameraPosition;
@@ -437,11 +465,6 @@ attribute vec4 at_tangent;
 #endif
 
 //Common Variables//
-#ifdef WORLD_TIME_ANIMATION
-float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
-#else
-float frametime = frameTimeCounter * ANIMATION_SPEED;
-#endif
 
 //Includes//
 #include "/lib/vertex/waving.glsl"
@@ -487,7 +510,7 @@ void main() {
 	vTexCoord.xy    = sign(texMinMidCoord) * 0.5 + 0.5;
 	#endif
 
-	entity = mc_Entity.x;
+	entityId = mc_Entity.x;
     
 	color = gl_Color;
 	

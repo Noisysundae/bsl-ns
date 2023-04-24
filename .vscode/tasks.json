@@ -3,6 +3,7 @@
 	"tasks": [
 		{
 			"label": "Git: Fetch Everything",
+			"detail": "Fetch all tags and branches from all remotes",
 			"type": "shell",
 			"command": "git fetch --all --tags",
 			"presentation": {
@@ -15,6 +16,37 @@
 				}
 			},
 			"problemMatcher": []
+		},
+		{
+			"label": "Git: Wrapup",
+			"detail": "Create a merge HEAD involving specified branches, with \"ours\" strategy",
+			"type": "shell",
+			"command": [
+				"git merge ${input:git-wrapup-branches} --strategy ours --no-commit",
+			],
+			"presentation": {
+				"close": true,
+				"reveal": "silent",
+			},
+			"windows": {
+				"options": {
+					"cwd": "${workspaceFolder}"
+				}
+			},
+			"problemMatcher": []
+		},
+	],
+	"inputs": [
+		{
+			"id": "git-wrapup-dest",
+			"description": "Specify the branch to merge into",
+			"default": "main",
+			"type": "promptString",
+		},
+		{
+			"id": "git-wrapup-branches",
+			"description": "Specify branches to be merged (separated by a space)",
+			"type": "promptString",
 		},
 	]
 }

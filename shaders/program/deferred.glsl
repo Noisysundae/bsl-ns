@@ -14,7 +14,6 @@ varying vec2 texCoord;
 
 //Uniforms//
 uniform float far, near;
-uniform float frameTimeCounter;
 uniform float viewWidth, viewHeight, aspectRatio;
 
 uniform mat4 gbufferProjection;
@@ -33,7 +32,7 @@ float GetLinearDepth(float depth) {
 
 //Program//
 void main() {
-    float ao = AmbientOcclusion(Bayer64(gl_FragCoord.xy));
+    float ao = AmbientOcclusion(Bayer8(gl_FragCoord.xy));
     
     /* DRAWBUFFERS:4 */
     gl_FragData[0] = vec4(ao, 0.0, 0.0, 0.0);

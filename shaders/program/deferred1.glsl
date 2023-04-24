@@ -17,11 +17,9 @@ varying vec3 sunVec, upVec, eastVec;
 //Uniforms//
 uniform int frameCounter;
 uniform int isEyeInWater;
-uniform int worldTime;
 
 uniform float blindFactor, darknessFactor, nightVision;
 uniform float far, near;
-uniform float frameTimeCounter;
 uniform float rainStrength;
 uniform float shadowFade, voidFade;
 uniform float timeAngle, timeBrightness;
@@ -51,6 +49,11 @@ uniform sampler2D colortex7;
 uniform sampler2D noisetex;
 #endif
 
+#ifdef MULTICOLORED_BLOCKLIGHT
+uniform sampler2D colortex8;
+uniform sampler2D colortex9;
+#endif
+
 //Optifine Constants//
 #ifdef AO
 const bool colortex4MipmapEnabled = true;
@@ -66,12 +69,6 @@ const bool colortex6MipmapEnabled = true;
 float eBS = eyeBrightnessSmooth.y / 240.0;
 float sunVisibility  = clamp((dot( sunVec, upVec) + 0.05) * 10.0, 0.0, 1.0);
 float moonVisibility = clamp((dot(-sunVec, upVec) + 0.05) * 10.0, 0.0, 1.0);
-
-#ifdef WORLD_TIME_ANIMATION
-float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
-#else
-float frametime = frameTimeCounter * ANIMATION_SPEED;
-#endif
 
 vec2 aoOffsets[4] = vec2[4](
 	vec2( 1.0,  0.0),
@@ -172,7 +169,7 @@ void main() {
     vec4 color = texture2D(colortex0, texCoord);
 	float z = texture2D(depthtex0, texCoord).r;
 
-	float dither = Bayer64(gl_FragCoord.xy);
+	float dither = Bayer8(gl_FragCoord.xy);
 
 	#if ALPHA_BLEND == 0
 	if (z == 1.0) color.rgb = max(color.rgb - dither / vec3(64.0), vec3(0.0));
@@ -292,8 +289,9 @@ void main() {
 	color.rgb = sqrt(max(color.rgb, vec3(0.0)));
 	#endif
     
-    /* DRAWBUFFERS:0 */
+    /*DRAWBUFFERS:0 */
     gl_FragData[0] = color;
+
 	#if !defined REFLECTION_PREVIOUS && REFRACTION == 0
 	/*DRAWBUFFERS:05*/
 	gl_FragData[1] = vec4(reflectionColor, float(z < 1.0));

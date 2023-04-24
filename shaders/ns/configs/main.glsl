@@ -1,3 +1,4 @@
+#include "/ns/configs/ca.glsl"
 #include "/ns/configs/color-grading.glsl"
 #include "/ns/configs/cpf.glsl"
 #include "/ns/configs/dithering.glsl"
