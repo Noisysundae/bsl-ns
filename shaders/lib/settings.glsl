@@ -429,3 +429,10 @@ Please don't edit anything from Undefine section and onwards.
 
   #ifdef TAA_SELECTIVE
   #endif
+
+uniform vec3 nsDayPhase;
+uniform int worldTime;
+uniform float frameTimeCounter;
+
+//BSL-NS//
+#include "/ns/configs/ca.glsl"
