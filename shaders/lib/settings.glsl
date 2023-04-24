@@ -44,6 +44,7 @@ Please don't edit anything from Undefine section and onwards.
   #define AO_STRENGTH 1.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
   #define DESATURATION
   #define DESATURATION_FACTOR 1.5 //[2.0 1.5 1.0 0.5 0.0]
+//#define MULTICOLORED_BLOCKLIGHT
 //#define DYNAMIC_HANDLIGHT
 //#define WHITE_WORLD
 
@@ -145,7 +146,7 @@ Please don't edit anything from Undefine section and onwards.
   #define BLOOM
   #define BLOOM_STRENGTH 1.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 2.25 2.50 2.75 3.00 3.25 3.50 3.75 4.00]
   #define BLOOM_CONTRAST 0 //[-4 -3 -2 -1 0 1 2 3 4]
-  #define BLOOM_RADIUS 7 //[1 2 3 4 5 6 7]
+  #define BLOOM_RADIUS 6 //[1 2 3 4 5 6 7]
   #define LENS_FLARE
   #define LENS_FLARE_STRENGTH 1.00 //[0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00]
   #define VIGNETTE
@@ -160,6 +161,8 @@ Please don't edit anything from Undefine section and onwards.
 
   #define FXAA_SUBPIXEL 0.75 //[0.00 0.25 0.50 0.75 1.00]
   #define FXAA_EDGE_SENSITIVITY 1 //[0 1 2]
+
+//#define TAA_SELECTIVE
 
 //Color//
   #define LIGHT_MR 255 //[0 4 8 12 16 20 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96 100 104 108 112 116 120 124 128 132 136 140 144 148 152 156 160 164 168 172 176 180 184 188 192 196 200 204 208 212 216 220 224 228 232 236 240 244 248 252 255]
@@ -412,9 +415,17 @@ Please don't edit anything from Undefine section and onwards.
   #define NORMAL_SKIP
   #endif
 
-//Shadow Entity Placeholder//
+//Multi-colored Unavailable on 1.16.5 and below//
+  #if MC_VERSION < 11605
+  // #undef MULTICOLORED_BLOCKLIGHT //not working properly for some reason
+  #endif
+
+//Show In Shader Options//
   #ifdef SHADOW_ENTITY
   #endif
   
   #ifdef SHADOW_BLOCK_ENTITY
+  #endif
+
+  #ifdef TAA_SELECTIVE
   #endif
