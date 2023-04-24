@@ -16,7 +16,6 @@ varying vec3 sunVec, upVec;
 
 //Uniforms//
 uniform int isEyeInWater;
-uniform int worldTime;
 
 uniform float blindFactor, darknessFactor;
 uniform float rainStrength;

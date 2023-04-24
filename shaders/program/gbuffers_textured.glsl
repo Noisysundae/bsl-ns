@@ -20,11 +20,9 @@ varying vec4 color;
 //Uniforms//
 uniform int frameCounter;
 uniform int isEyeInWater;
-uniform int worldTime;
 
 uniform float blindFactor, darknessFactor, nightVision;
 uniform float far, near;
-uniform float frameTimeCounter;
 uniform float rainStrength;
 uniform float screenBrightness; 
 uniform float shadowFade, voidFade;
@@ -63,12 +61,6 @@ uniform sampler2D colortex9;
 float eBS = eyeBrightnessSmooth.y / 240.0;
 float sunVisibility  = clamp((dot( sunVec, upVec) + 0.05) * 10.0, 0.0, 1.0);
 float moonVisibility = clamp((dot(-sunVec, upVec) + 0.05) * 10.0, 0.0, 1.0);
-
-#ifdef WORLD_TIME_ANIMATION
-float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
-#else
-float frametime = frameTimeCounter * ANIMATION_SPEED;
-#endif
 
 vec3 lightVec = sunVec * ((timeAngle < 0.5325 || timeAngle > 0.9675) ? 1.0 : -1.0);
 
@@ -219,9 +211,6 @@ varying vec3 sunVec, upVec, eastVec;
 varying vec4 color;
 
 //Uniforms//
-uniform int worldTime;
-
-uniform float frameTimeCounter;
 uniform float timeAngle;
 
 uniform vec3 cameraPosition;
@@ -243,11 +232,6 @@ attribute vec4 mc_Entity;
 attribute vec4 mc_midTexCoord;
 
 //Common Variables//
-#ifdef WORLD_TIME_ANIMATION
-float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
-#else
-float frametime = frameTimeCounter * ANIMATION_SPEED;
-#endif
 
 //Common Functions//
 #ifdef SOFT_PARTICLES

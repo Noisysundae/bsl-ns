@@ -16,11 +16,9 @@ varying vec3 upVec, sunVec;
 
 //Uniforms//
 uniform int isEyeInWater;
-uniform int worldTime;
 
 uniform float blindFactor, darknessFactor;
 uniform float frameCounter;
-uniform float frameTimeCounter;
 uniform float nightVision;
 uniform float rainStrength;
 uniform float shadowFade, voidFade;
@@ -37,12 +35,6 @@ uniform mat4 gbufferProjectionInverse;
 uniform sampler2D noisetex;
 
 //Common Variables//
-#ifdef WORLD_TIME_ANIMATION
-float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
-#else
-float frametime = frameTimeCounter * ANIMATION_SPEED;
-#endif
-
 float eBS = eyeBrightnessSmooth.y / 240.0;
 float sunVisibility  = clamp((dot( sunVec, upVec) + 0.05) * 10.0, 0.0, 1.0);
 float moonVisibility = clamp((dot(-sunVec, upVec) + 0.05) * 10.0, 0.0, 1.0);

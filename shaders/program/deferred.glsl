@@ -14,7 +14,6 @@ varying vec2 texCoord;
 
 //Uniforms//
 uniform float far, near;
-uniform float frameTimeCounter;
 uniform float viewWidth, viewHeight, aspectRatio;
 
 uniform mat4 gbufferProjection;

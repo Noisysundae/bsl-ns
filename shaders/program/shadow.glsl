@@ -26,21 +26,13 @@ uniform int blockEntityId;
 uniform sampler2D tex;
 
 #ifdef WATER_CAUSTICS
-uniform int worldTime;
 
-uniform float frameTimeCounter;
 
 uniform sampler2D noisetex;
 #endif
 
 //Common Variables//
 #ifdef WATER_CAUSTICS
-#ifdef WORLD_TIME_ANIMATION
-float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
-#else
-float frametime = frameTimeCounter * ANIMATION_SPEED;
-#endif
-
 float GetWaterHeightMap(vec3 worldPos, vec2 offset) {
     float noise = 0.0;
     
@@ -174,10 +166,6 @@ varying vec3 worldPos;
 varying vec4 color;
 
 //Uniforms//
-uniform int worldTime;
-
-uniform float frameTimeCounter;
-
 uniform vec3 cameraPosition;
 
 uniform mat4 gbufferModelView, gbufferModelViewInverse;
@@ -189,11 +177,6 @@ attribute vec4 mc_Entity;
 attribute vec4 mc_midTexCoord;
 
 //Common Variables//
-#ifdef WORLD_TIME_ANIMATION
-float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
-#else
-float frametime = frameTimeCounter * ANIMATION_SPEED;
-#endif
 
 //Includes//
 #include "/lib/vertex/waving.glsl"

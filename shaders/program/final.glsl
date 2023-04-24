@@ -16,7 +16,7 @@ varying vec2 texCoord;
 uniform sampler2D colortex1;
 
 uniform float viewWidth, viewHeight;
-uniform float aspectRatio, frameTimeCounter;
+uniform float aspectRatio;
 
 //Optifine Constants//
 /*

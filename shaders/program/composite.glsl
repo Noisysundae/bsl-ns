@@ -17,12 +17,10 @@ varying vec3 sunVec, upVec;
 //Uniforms//
 uniform int frameCounter;
 uniform int isEyeInWater;
-uniform int worldTime;
 
 uniform float blindFactor, darknessFactor, nightVision;
 uniform float darknessLightFactor;
 uniform float far, near;
-uniform float frameTimeCounter;
 uniform float rainStrength;
 uniform float shadowFade;
 uniform float timeAngle, timeBrightness;
@@ -72,12 +70,6 @@ const bool colortex9Clear = false;
 //Common Variables//
 float eBS = eyeBrightnessSmooth.y / 240.0;
 float sunVisibility = clamp(dot(sunVec, upVec) + 0.05, 0.0, 0.1) * 10.0;
-
-#ifdef WORLD_TIME_ANIMATION
-float frametime = float(worldTime) * 0.05 * ANIMATION_SPEED;
-#else
-float frametime = frameTimeCounter * ANIMATION_SPEED;
-#endif
 
 //Common Functions//
 float GetLuminance(vec3 color) {
