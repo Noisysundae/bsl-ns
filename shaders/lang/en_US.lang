@@ -814,7 +814,7 @@ option.WAVING_LANTERN.comment=Allows lantern to wave.
 
 ### BSL-NS
 
-screen.NS=§lBSL-§c§lNS§r §ov0.1§r...
+screen.NS=§lBSL-§c§lNS§r §ov0.3§r...
 screen.NS.comment=Noisysundae's BSL Extension\n———\n\nClick to expand settings related to BSL-NS features.
 
 option.NS_CA_ENABLED=Climatic Animations (CA)
