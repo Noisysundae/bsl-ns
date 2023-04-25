@@ -29,7 +29,7 @@
 							NS_DITHERING_BAYER_EXPONENT,
 							NS_DITHERING_BAYER_SCALE)
 					#else
-						> Bayer64(gl_FragCoord.xy)
+						> Bayer8(gl_FragCoord.xy)
 					#endif
 				);
 			#else

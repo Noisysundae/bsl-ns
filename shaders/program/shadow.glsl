@@ -74,7 +74,7 @@ float GetWaterHeightMap(vec3 worldPos, vec2 offset) {
 //Program//
 void main() {
     #if MC_VERSION >= 11300
-	if (blockEntityId == 10205) discard;
+	if (blockEntityId == 10205 || blockEntityId == 10285) discard;
 	#endif
 
     vec4 albedo = texture2D(tex, texCoord.xy);
@@ -209,7 +209,7 @@ void main() {
 	color = gl_Color;
 	
 	mat = 0;
-	if (mc_Entity.x == 10301 || mc_Entity.x == 10302) mat = 1;
+	if (mc_Entity.x == 10301 || mc_Entity.x == 10381 || mc_Entity.x == 10302 || mc_Entity.x == 10382) mat = 1;
 	if (mc_Entity.x == 10300 || mc_Entity.x == 10304) mat = 2;
 	
 	#ifndef SHADOW_VEGETATION
