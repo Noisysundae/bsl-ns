@@ -91,9 +91,9 @@ vec3 WavingBlocks(vec3 position, float istopv) {
     #ifdef WAVING_PLANT
     if (mc_Entity.x == 10101 && (istopv > 0.9|| fract(worldpos.y + 0.005) > 0.01))
         wave += CalcMove(worldpos, 0.7, 1.35, vec2(0.12, 0.06));
-    if (mc_Entity.x == 10107 || mc_Entity.x == 10207)
+    if (mc_Entity.x == 10107 || mc_Entity.x == 10187 || mc_Entity.x == 10207 || mc_Entity.x == 10287)
         wave += CalcMove(worldpos, 0.5, 1.25, vec2(0.06, 0.00));
-    if (mc_Entity.x == 10108)
+    if (mc_Entity.x == 10108 || mc_Entity.x == 10188)
         wave.y += CalcLilypadMove(worldpos);
     #endif
 
@@ -104,7 +104,7 @@ vec3 WavingBlocks(vec3 position, float istopv) {
     #endif
 
     #ifdef WAVING_LEAF
-    if (mc_Entity.x == 10105)
+    if (mc_Entity.x == 10105 || mc_Entity.x == 10185)
         wave += CalcMove(worldpos, 0.25, 1.0, vec2(0.08, 0.08));
     #endif
 
@@ -124,7 +124,7 @@ vec3 WavingBlocks(vec3 position, float istopv) {
     #endif
 
     #ifdef WAVING_LANTERN
-    if (mc_Entity.x == 10206)
+    if (mc_Entity.x == 10206 || mc_Entity.x == 10286)
 		wave += CalcLanternMove(worldpos);
     #endif
 
