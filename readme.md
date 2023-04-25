@@ -1,7 +1,9 @@
 # Noisysundae's BSL Extension (BSL-NS)
 
-Version: **0.2**  
-Release Date: 24 Apr 2023
+Version: **0.3**  
+Release Date: 25 Apr 2023
+
+Refers to the [tags](https://github.com/Noisysundae/bsl-ns/tags) section for releases. Simply download the source zip and extract it into your `shaderpack` directory.
 
 ## Credits
 
@@ -11,7 +13,10 @@ Shout-out to **[CaptTatsu](https://bitslablab.com/)** for the obvious shader thi
 
 ### Extended BSL Shaders Settings
 
-- **New!** Smooth World Time Animation
+- **New!** Sky Related Settings
+	- An option to darken the sky more at dawn and dusk.
+	- An option to dim stars depending on the moon phase.
+- Smooth World Time Animation
 	- No longer locked at 20 FPS (Game tick resolution).
 	- New effect on pausing / resuming the game!
 - Color Grading
@@ -21,7 +26,7 @@ Shout-out to **[CaptTatsu](https://bitslablab.com/)** for the obvious shader thi
 
 ### BSL-NS Features
 
-- **New!** Climatic Animation
+- Climatic Animation
 	- Waving objects and water scale based on the environment (biome, weather, etc.).
 	- Configurable via a global toggle and weight sliders.
 - Improved Pattern Dithering
@@ -33,10 +38,12 @@ Shout-out to **[CaptTatsu](https://bitslablab.com/)** for the obvious shader thi
 
 ### Other Changes in This Version
 
-- Upgraded base BSL Shaders to version 8.2.03.
-- Added an attached preset (settings import) used by...me.
-	- Includes only non-performance settings.
-- Removed entity backface culling on camera fade.
+- Climatic Animation
+	- Now defaults to off.
+	- Clearer option labels and tooltips.
+- Camera Fade
+	- Increased maximum values on distance sliders.
+	- For blocks, now applies only to those with no collision, mostly to prevent accidental x-ray due to face culling.
 
 ## Disclaimer
 
