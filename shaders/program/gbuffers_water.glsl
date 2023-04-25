@@ -700,8 +700,8 @@ void main() {
 	mat = 0.0;
 	
 	if (mc_Entity.x == 10300 || mc_Entity.x == 10304) mat = 1.0;
-	if (mc_Entity.x == 10301)						  mat = 2.0;
-	if (mc_Entity.x == 10302) 						  mat = 3.0;
+	if (mc_Entity.x == 10301 || mc_Entity.x == 10381) mat = 2.0;
+	if (mc_Entity.x == 10302 || mc_Entity.x == 10382) mat = 3.0;
 	if (mc_Entity.x == 10303) 						  mat = 4.0;
 
 	entityId = mc_Entity.x;
@@ -727,7 +727,7 @@ void main() {
 		rainStrength,
 		thunderStrength,
 		eyeBrightnessSmooth.y);
-	if (mc_Entity.x == 10300 || mc_Entity.x == 10302 || mc_Entity.x == 10304)
+	if (mc_Entity.x == 10300 || mc_Entity.x == 10302 || mc_Entity.x == 10382 || mc_Entity.x == 10304)
 		position.y += WavingWater(position.xyz) * sqrt(nscf);
 	#endif
 

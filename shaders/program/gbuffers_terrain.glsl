@@ -132,26 +132,11 @@ float GetLuminance(vec3 color) {
 void main() {
     vec4 albedo = texture2D(texture, texCoord) * vec4(color.rgb, 1.0);
 
-	if (abs(entityId - 10100) < 0.1
-		|| abs(entityId - 10101) < 0.1
-		|| abs(entityId - 10102) < 0.1
-		|| abs(entityId - 10103) < 0.1
-		|| abs(entityId - 10104) < 0.1
-		|| abs(entityId - 10105) < 0.1
-		|| abs(entityId - 10106) < 0.1
-		|| abs(entityId - 10107) < 0.1
-		|| abs(entityId - 10108) < 0.1
-		|| abs(entityId - 10109) < 0.1
-		|| abs(entityId - 10200) < 0.1
-		|| abs(entityId - 10203) < 0.1
-		|| abs(entityId - 10204) < 0.1
-		|| abs(entityId - 10207) < 0.1
-		|| abs(entityId - 10208) < 0.1
-		|| abs(entityId - 10300) < 0.1
-		|| abs(entityId - 10301) < 0.1
-		|| abs(entityId - 10400) < 0.1
-		|| abs(entityId - 10401) < 0.1
-		|| abs(entityId - 10501) < 0.1
+	if (
+		(entityId > 10099 && entityId < 10179) ||
+		(entityId > 10199 && entityId < 10279) ||
+		(entityId > 10299 && entityId < 10379) ||
+		(entityId > 10399 && entityId < 10479)
 	) {
 		albedo.a *= getPf();
 		if (albedo.a < 0.001) discard;
@@ -518,7 +503,7 @@ void main() {
 
 	if (mc_Entity.x >= 10100 && mc_Entity.x < 10200)
 		mat = 1.0;
-	if (mc_Entity.x == 10105 || mc_Entity.x == 10106){
+	if (mc_Entity.x == 10105 || mc_Entity.x == 10185 || mc_Entity.x == 10106){
 		mat = 2.0;
 		color.rgb *= 1.225;
 	}
@@ -526,13 +511,13 @@ void main() {
 		mat = 3.0;
 	if (mc_Entity.x == 10203)
 		mat = 4.0;
-	if (mc_Entity.x == 10208)
+	if (mc_Entity.x == 10208 || mc_Entity.x == 10288)
 		mat = 5.0;
 
-	if (mc_Entity.x == 10201 || mc_Entity.x == 10205 || mc_Entity.x == 10206)
+	if (mc_Entity.x == 10201 || mc_Entity.x == 10281 || mc_Entity.x == 10205 || mc_Entity.x == 10285 || mc_Entity.x == 10206 || mc_Entity.x == 10286)
 		recolor = 1.0;
 
-	if (mc_Entity.x == 10202)
+	if (mc_Entity.x == 10202 || mc_Entity.x == 10282)
 		lmCoord.x -= 0.0667;
 
 	if (mc_Entity.x == 10203)

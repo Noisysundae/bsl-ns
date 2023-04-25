@@ -1,4 +1,8 @@
 #ifdef OVERWORLD
+
+//BSL-NS//
+#include "/ns/configs/sky.glsl"
+
 float CloudSample(vec2 coord, vec2 wind, float currentStep, float sampleStep, float sunCoverage) {
 	#if CLOUD_BASE == 0
 	float noiseBase = texture2D(noisetex, coord * 0.25 + wind).r;
@@ -101,7 +105,7 @@ float GetNoise(vec2 pos) {
 	return fract(sin(dot(pos, vec2(12.9898, 4.1414))) * 43758.5453);
 }
 
-void DrawStars(inout vec3 color, vec3 viewPos) {
+void DrawStars(inout vec3 color, vec3 viewPos, int moonPhase) {
 	vec3 wpos = vec3(gbufferModelViewInverse * vec4(viewPos, 1.0));
 	vec3 planeCoord = wpos / (wpos.y + length(wpos.xz));
 	vec2 wind = vec2(frametime, 0.0);
@@ -129,7 +133,11 @@ void DrawStars(inout vec3 color, vec3 viewPos) {
 	star *= mix(clamp((cameraPosition.y - 48.0) / 16.0, 0.0, 1.0), 1.0, eBS);
 	#endif
 		
-	color += star * pow(lightNight, vec3(0.8));
+	color += star * pow(lightNight, vec3(0.8))
+	#ifdef NS_MOON_PHASE_STARS_ENABLED
+	* (1 - cos(moonPhase * 0.3927) * 0.6667)
+	#endif
+	;
 }
 
 #ifdef AURORA

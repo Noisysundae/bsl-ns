@@ -157,7 +157,7 @@ void main() {
 		vec2 lightmap = clamp(lmCoord, vec2(0.0), vec2(1.0));
 		
 		float metalness       = 0.0;
-		float emission        = float(blockEntityId == 10205);
+		float emission        = float(blockEntityId == 10205 || blockEntityId == 10285);
 		float subsurface      = 0.0;
 		float basicSubsurface = float(blockEntityId == 10109) * 0.5;
 		vec3 baseReflectance  = vec3(0.04);
@@ -205,7 +205,7 @@ void main() {
     	albedo.rgb = pow(albedo.rgb, vec3(2.2));
 
 		#ifdef EMISSIVE_RECOLOR
-		if (blockEntityId == 10205 && dot(color.rgb, vec3(1.0)) > 2.66) {
+		if ((blockEntityId == 10205 || blockEntityId == 10285) && dot(color.rgb, vec3(1.0)) > 2.66) {
 			float ec = length(albedo.rgb);
 			albedo.rgb = blocklightCol * (ec * 0.63 / BLOCKLIGHT_I) + ec * 0.07;
 		}
@@ -296,7 +296,7 @@ void main() {
 
 		#if ALPHA_BLEND == 0
 		albedo.rgb = sqrt(max(albedo.rgb, vec3(0.0)));
-		if(blockEntityId == 10205) albedo.a = sqrt(albedo.a);
+		if(blockEntityId == 10205 || blockEntityId == 10285) albedo.a = sqrt(albedo.a);
 		#endif
 	}
 

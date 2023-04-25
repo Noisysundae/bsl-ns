@@ -3,3 +3,4 @@
 #include "/ns/configs/cpf.glsl"
 #include "/ns/configs/dithering.glsl"
 #include "/ns/configs/outline.glsl"
+#include "/ns/configs/sky.glsl"

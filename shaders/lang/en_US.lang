@@ -837,7 +837,7 @@ option.WAVING_LANTERN.comment=Allows lantern to wave.
 
 ### BSL-NS
 
-screen.NS=§lBSL-§c§lNS§r §ov0.1§r...
+screen.NS=§lBSL-§c§lNS§r §ov0.3§r...
 screen.NS.comment=Noisysundae's BSL Extension\n———\n\nClick to expand settings related to BSL-NS features.
 
 option.NS_CA_ENABLED=Climatic Animations (CA)
@@ -845,17 +845,20 @@ option.NS_CA_ENABLED.comment=Apply environment factors to waving objects and wat
 screen.NS_CA=CA Settings...
 screen.NS_CA.comment=Expand other CA settings.
 option.NS_CA_WORLD_TIME_ENABLED=Smooth World Time
-option.NS_CA_WORLD_TIME_ENABLED.comment=World time trade-off: Goes beyond 20 FPS plus a cool time stop on pausing, but resets itself every in-game month.
-option.NS_CA_TEMPERATURE_WEIGHT=Temperature Weight
-option.NS_CA_TEMPERATURE_WEIGHT.comment=More temperate (closer to 0.5 the temperature on the current biome) = windier.
-option.NS_CA_RAINFALL_WEIGHT=Rainfall Weight
-option.NS_CA_RAINFALL_WEIGHT.comment=a.k.a Downfall / Humidity\nDryer (less rainfall on the current biome) = windier.
-option.NS_CA_WEATHER_WEIGHT=Weather Weight
+option.NS_CA_WORLD_TIME_ENABLED.comment=World time trade-off: Goes beyond 20 FPS plus a cool time stop on pausing, but briefly rewinds itself every in-game month.
+option.NS_CA_TEMPERATURE_WEIGHT=Waving Weight - Temperature
+option.NS_CA_TEMPERATURE_WEIGHT.comment=More temperate (closer to 0.5 the temperature on the current biome) = windier. \
+§e[*]§r Due to renderer's limitation, uses player's position as a reference point rather than each block's, which means the factor applies on all waving blocks on the screen equally.
+option.NS_CA_RAINFALL_WEIGHT=Waving Weight - Rainfall
+option.NS_CA_RAINFALL_WEIGHT.comment=a.k.a Downfall / Humidity\nDryer (less rainfall on the current biome) = windier. \
+§e[*]§r Due to renderer's limitation, uses player's position as a reference point rather than each block's, which means the factor applies on all waving blocks on the screen equally.
+option.NS_CA_WEATHER_WEIGHT=Waving Weight - Weather
 option.NS_CA_WEATHER_WEIGHT.comment=Somewhat stronger wind when raining, and significantly stronger during a thunderstorm.
-option.NS_CA_ALTITUDE_WEIGHT=Altitude Weight
-option.NS_CA_ALTITUDE_WEIGHT.comment=Higher = windier
-option.NS_CA_INDOOR_WEIGHT=Indoor Weight
-option.NS_CA_INDOOR_WEIGHT.comment=Less waving for indoor blocks. §e[*]§r Due to renderer's limitation, uses player's sky light level for calculation rather than each block's.
+option.NS_CA_ALTITUDE_WEIGHT=Waving Weight - Altitude
+option.NS_CA_ALTITUDE_WEIGHT.comment=Higher Y = windier (Scaling between Y 64 and 160, inclusive)
+option.NS_CA_INDOOR_WEIGHT=Waving Weight - Indoor
+option.NS_CA_INDOOR_WEIGHT.comment=Less waving for indoor blocks. \
+§e[*]§r Due to renderer's limitation, uses player's position as a reference point rather than each block's, which means the factor applies on all waving blocks on the screen equally.
 
 option.NS_CPF_ENABLED=Camera Proximity Fade (CPF)
 option.NS_CPF_ENABLED.comment=Dithering away photobombing entities and particles.
@@ -875,6 +878,8 @@ value.NS_CPF_DIST_THRESHOLD_FIRST_PERSON.0.75=0.75 Blocks
 value.NS_CPF_DIST_THRESHOLD_FIRST_PERSON.1.0=1 Block
 value.NS_CPF_DIST_THRESHOLD_FIRST_PERSON.1.5=1.5 Blocks
 value.NS_CPF_DIST_THRESHOLD_FIRST_PERSON.2.0=2 Blocks
+value.NS_CPF_DIST_THRESHOLD_FIRST_PERSON.3.0=3 Blocks
+value.NS_CPF_DIST_THRESHOLD_FIRST_PERSON.4.0=4 Blocks
 option.NS_CPF_DIST_THRESHOLD_THIRD_PERSON=Distance Threshold (Third Person View)
 option.NS_CPF_DIST_THRESHOLD_THIRD_PERSON.comment=Distance from the third-person camera the fade starts kicking in.
 value.NS_CPF_DIST_THRESHOLD_THIRD_PERSON.0.05=0.05 Blocks
@@ -889,6 +894,10 @@ value.NS_CPF_DIST_THRESHOLD_THIRD_PERSON.1.5=1.5 Blocks
 value.NS_CPF_DIST_THRESHOLD_THIRD_PERSON.2.0=2 Blocks
 value.NS_CPF_DIST_THRESHOLD_THIRD_PERSON.3.0=3 Blocks
 value.NS_CPF_DIST_THRESHOLD_THIRD_PERSON.4.0=4 Blocks
+value.NS_CPF_DIST_THRESHOLD_THIRD_PERSON.5.0=5 Blocks
+value.NS_CPF_DIST_THRESHOLD_THIRD_PERSON.6.0=6 Blocks
+value.NS_CPF_DIST_THRESHOLD_THIRD_PERSON.7.0=7 Blocks
+value.NS_CPF_DIST_THRESHOLD_THIRD_PERSON.8.0=8 Blocks
 
 option.NS_DITHERING_ENABLED=Precise Dithering
 option.NS_DITHERING_ENABLED.comment=Corrects the pattern dithering algorithm (Bayer filter).
@@ -932,3 +941,10 @@ screen.NS_OUTLINE=Outline Settings...
 screen.NS_OUTLINE.comment=Additional BSL outline settings.
 option.OUTLINE_MIX=Outline Mix§d*
 option.OUTLINE_MIX.comment=Adjust the intensity of the outline.\n§d*§r BSL-NS' Extended Setting
+
+screen.NS_SKY=Sky Settings...
+screen.NS_SKY.comment=Additional BSL sky settings.
+option.NS_CREPUSCULAR_SKY_ENABLED=Crepuscular Sky
+option.NS_CREPUSCULAR_SKY_ENABLED.comment=Dimmer sky at dawn and dusk.
+option.NS_MOON_PHASE_STARS_ENABLED=Moon Phase Affects Stars
+option.NS_MOON_PHASE_STARS_ENABLED.comment=The title! Full-moon nights have faintest stars.
