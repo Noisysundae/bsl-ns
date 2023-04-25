@@ -1,4 +1,8 @@
 #ifdef OVERWORLD
+
+//BSL-NS//
+#include "/ns/configs/sky.glsl"
+
 vec3 GetSkyColor(vec3 viewPos, bool isReflection) {
     vec3 nViewPos = normalize(viewPos);
 
@@ -45,7 +49,11 @@ vec3 GetSkyColor(vec3 viewPos, bool isReflection) {
         sqrt(lightSky), 
         lightMix
     );
-    sky *= sky;
+    sky *= sky
+    #ifdef NS_CREPUSCULAR_SKY_ENABLED
+    * vec3(sqrt(abs(nsDayPhase.y)))
+    #endif
+    ;
 
     float nightGradient = exp(-max(VoU, 0.0) / SKY_DENSITY_N);
     vec3 nightSky = lightNight * lightNight * nightGradient * nightExposure;

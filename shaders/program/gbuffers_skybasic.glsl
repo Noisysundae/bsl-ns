@@ -17,6 +17,7 @@ varying vec3 upVec, sunVec;
 //Uniforms//
 uniform int isEyeInWater;
 uniform int worldTime;
+uniform int moonPhase;
 
 uniform float blindFactor, darknessFactor;
 uniform float frameCounter;
@@ -112,7 +113,7 @@ void main() {
 	#endif
 
 	#ifdef STARS
-	if (moonVisibility > 0.0) DrawStars(albedo.rgb, viewPos.xyz);
+	if (moonVisibility > 0.0) DrawStars(albedo.rgb, viewPos.xyz, moonPhase);
 	#endif
 
 	float dither = Bayer8(gl_FragCoord.xy);
