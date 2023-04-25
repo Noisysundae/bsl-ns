@@ -822,14 +822,17 @@ option.NS_CA_ENABLED.comment=Apply environment factors to waving objects and wat
 screen.NS_CA=CA Settings...
 screen.NS_CA.comment=Expand other CA settings.
 option.NS_CA_WORLD_TIME_ENABLED=Smooth World Time
-option.NS_CA_WORLD_TIME_ENABLED.comment=World time trade-off: Goes beyond 20 FPS plus a cool time stop on pausing, but resets itself every in-game month.
-option.NS_CA_TEMPERATURE_WEIGHT=Temperature Weight
-option.NS_CA_TEMPERATURE_WEIGHT.comment=More temperate (closer to 0.5 the temperature on the current biome) = windier.
-option.NS_CA_RAINFALL_WEIGHT=Rainfall Weight
-option.NS_CA_RAINFALL_WEIGHT.comment=a.k.a Downfall / Humidity\nDryer (less rainfall on the current biome) = windier.
-option.NS_CA_WEATHER_WEIGHT=Weather Weight
+option.NS_CA_WORLD_TIME_ENABLED.comment=World time trade-off: Goes beyond 20 FPS plus a cool time stop on pausing, but briefly rewinds itself every in-game month.
+option.NS_CA_TEMPERATURE_WEIGHT=Waving Weight - Temperature
+option.NS_CA_TEMPERATURE_WEIGHT.comment=More temperate (closer to 0.5 the temperature on the current biome) = windier. \
+§e[*]§r Due to renderer's limitation, uses player's position as a reference point rather than each block's, which means the factor applies on all waving blocks on the screen equally.
+option.NS_CA_RAINFALL_WEIGHT=Waving Weight - Rainfall
+option.NS_CA_RAINFALL_WEIGHT.comment=a.k.a Downfall / Humidity\nDryer (less rainfall on the current biome) = windier. \
+§e[*]§r Due to renderer's limitation, uses player's position as a reference point rather than each block's, which means the factor applies on all waving blocks on the screen equally.
+option.NS_CA_WEATHER_WEIGHT=Waving Weight - Weather
 option.NS_CA_WEATHER_WEIGHT.comment=Somewhat stronger wind when raining, and significantly stronger during a thunderstorm.
-option.NS_CA_ALTITUDE_WEIGHT=Altitude Weight
-option.NS_CA_ALTITUDE_WEIGHT.comment=Higher = windier
-option.NS_CA_INDOOR_WEIGHT=Indoor Weight
-option.NS_CA_INDOOR_WEIGHT.comment=Less waving for indoor blocks. §e[*]§r Due to renderer's limitation, uses player's sky light level for calculation rather than each block's.
+option.NS_CA_ALTITUDE_WEIGHT=Waving Weight - Altitude
+option.NS_CA_ALTITUDE_WEIGHT.comment=Higher Y = windier (Scaling between Y 64 and 160, inclusive)
+option.NS_CA_INDOOR_WEIGHT=Waving Weight - Indoor
+option.NS_CA_INDOOR_WEIGHT.comment=Less waving for indoor blocks. \
+§e[*]§r Due to renderer's limitation, uses player's position as a reference point rather than each block's, which means the factor applies on all waving blocks on the screen equally.
