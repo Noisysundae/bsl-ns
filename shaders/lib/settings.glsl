@@ -429,3 +429,5 @@ Please don't edit anything from Undefine section and onwards.
 
   #ifdef TAA_SELECTIVE
   #endif
+
+uniform vec3 nsDayPhase;
