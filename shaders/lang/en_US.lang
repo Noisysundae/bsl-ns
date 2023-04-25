@@ -816,3 +816,10 @@ option.WAVING_LANTERN.comment=Allows lantern to wave.
 
 screen.NS=§lBSL-§c§lNS§r §ov0.3§r...
 screen.NS.comment=Noisysundae's BSL Extension\n———\n\nClick to expand settings related to BSL-NS features.
+
+screen.NS_SKY=Sky Settings...
+screen.NS_SKY.comment=Additional BSL sky settings.
+option.NS_CREPUSCULAR_SKY_ENABLED=Crepuscular Sky
+option.NS_CREPUSCULAR_SKY_ENABLED.comment=Dimmer sky at dawn and dusk.
+option.NS_MOON_PHASE_STARS_ENABLED=Moon Phase Affects Stars
+option.NS_MOON_PHASE_STARS_ENABLED.comment=The title! Full-moon nights have faintest stars.
