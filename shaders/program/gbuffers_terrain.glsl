@@ -140,26 +140,11 @@ float GetLuminance(vec3 color) {
 void main() {
     vec4 albedo = texture2D(texture, texCoord) * vec4(color.rgb, 1.0);
 
-	if (abs(entityId - 10100) < 0.1
-		|| abs(entityId - 10101) < 0.1
-		|| abs(entityId - 10102) < 0.1
-		|| abs(entityId - 10103) < 0.1
-		|| abs(entityId - 10104) < 0.1
-		|| abs(entityId - 10105) < 0.1
-		|| abs(entityId - 10106) < 0.1
-		|| abs(entityId - 10107) < 0.1
-		|| abs(entityId - 10108) < 0.1
-		|| abs(entityId - 10109) < 0.1
-		|| abs(entityId - 10200) < 0.1
-		|| abs(entityId - 10203) < 0.1
-		|| abs(entityId - 10204) < 0.1
-		|| abs(entityId - 10207) < 0.1
-		|| abs(entityId - 10208) < 0.1
-		|| abs(entityId - 10300) < 0.1
-		|| abs(entityId - 10301) < 0.1
-		|| abs(entityId - 10400) < 0.1
-		|| abs(entityId - 10401) < 0.1
-		|| abs(entityId - 10501) < 0.1
+	if (
+		(entityId > 10099 && entityId < 10179) ||
+		(entityId > 10199 && entityId < 10279) ||
+		(entityId > 10299 && entityId < 10379) ||
+		(entityId > 10399 && entityId < 10479)
 	) {
 		albedo.a *= getPf();
 		if (albedo.a < 0.001) discard;
